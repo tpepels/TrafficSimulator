@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/!svn/ver/361/trunk/TrafficSimulation/src/Data/Junctions
+END
+Interconnection.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/246/trunk/TrafficSimulation/src/Data/Junctions/Interconnection.java
+END
+Roundabout.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/117/trunk/TrafficSimulation/src/Data/Junctions/Roundabout.java
+END
+CrossRoads.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/259/trunk/TrafficSimulation/src/Data/Junctions/CrossRoads.java
+END
+Spawn.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/359/trunk/TrafficSimulation/src/Data/Junctions/Spawn.java
+END
+OffTheMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/313/trunk/TrafficSimulation/src/Data/Junctions/OffTheMap.java
+END
+TrafficLights.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/269/trunk/TrafficSimulation/src/Data/Junctions/TrafficLights.java
+END
+Junction.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/361/trunk/TrafficSimulation/src/Data/Junctions/Junction.java
+END
+OffRamp.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/318/trunk/TrafficSimulation/src/Data/Junctions/OffRamp.java
+END
+TrafficLightStatus.java
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/!svn/ver/162/trunk/TrafficSimulation/src/Data/Junctions/TrafficLightStatus.java
+END
+JunctionType.java
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/317/trunk/TrafficSimulation/src/Data/Junctions/JunctionType.java
+END
+OnRamp.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/!svn/ver/313/trunk/TrafficSimulation/src/Data/Junctions/OnRamp.java
+END
+TJunction.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/!svn/ver/240/trunk/TrafficSimulation/src/Data/Junctions/TJunction.java
+END
+TimeBasedTrafficLightJunction.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/!svn/ver/266/trunk/TrafficSimulation/src/Data/Junctions/TimeBasedTrafficLightJunction.java
+END

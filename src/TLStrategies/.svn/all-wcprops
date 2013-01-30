@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/398/trunk/TrafficSimulation/src/TLStrategies
+END
+TLPhase.java
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/!svn/ver/319/trunk/TrafficSimulation/src/TLStrategies/TLPhase.java
+END
+PhaseControl.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/398/trunk/TrafficSimulation/src/TLStrategies/PhaseControl.java
+END
+TLStrategy.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/!svn/ver/252/trunk/TrafficSimulation/src/TLStrategies/TLStrategy.java
+END
+Sotl_phaseControl.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/!svn/ver/395/trunk/TrafficSimulation/src/TLStrategies/Sotl_phaseControl.java
+END
+Sotl_request.java
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/377/trunk/TrafficSimulation/src/TLStrategies/Sotl_request.java
+END
+MarchingControl.java
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/275/trunk/TrafficSimulation/src/TLStrategies/MarchingControl.java
+END
+Sotl_platoonControl.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/!svn/ver/377/trunk/TrafficSimulation/src/TLStrategies/Sotl_platoonControl.java
+END

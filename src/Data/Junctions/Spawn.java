@@ -1,0 +1,179 @@
+package Data.Junctions;
+
+import Data.Car;
+import Data.Lane;
+import Data.Road;
+import Dijkstra.Dijkstra;
+import GUI.SimulationPanel;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
+
+public class Spawn extends Junction {
+
+    private double carSpawnRateMinute = 52;                      // The amount of cars that spawn at this junction per minute.
+    private double truckSpawnRateMinute = 6;                    // The amount of trucks that spawn at this junction per minute.
+    private final double msPerMinute = 60 * 1000;
+    private final int spawnTime = 0;
+    private Queue<Car> spawnQueue;
+    private final double headSpace = 2.5; // How many meters cars should be apart on the road.
+    private final double lengthConstant = 1.5;                     // determines the max length of a car
+    private final double accConstant = 2;
+    private int spawnedCars = 0;
+
+    public Spawn(int nodeNr, int gridX, int gridY, int gridSize, int carSpawnRate, int truckSpawnRate) {
+
+        super(JunctionType.Spawn, nodeNr, gridX, gridY, gridSize);
+
+        carSpawnRateMinute = carSpawnRate;
+        truckSpawnRateMinute = truckSpawnRate;
+        spawnQueue = new LinkedList();
+    }
+
+    public Spawn(int nodeNr, int gridX, int gridY, int gridSize) {
+        super(JunctionType.Spawn, nodeNr, gridX, gridY, gridSize);
+        spawnQueue = new LinkedList();
+    }
+
+    @Override
+    public void update(double timeInterval) {
+        //super.update(timeInterval);
+        // Spawn junction update
+        double carRate = carSpawnRateMinute;
+        double truckRate = truckSpawnRateMinute;
+        double carfraction = (timeInterval / msPerMinute) * carRate;
+        double truckfraction = (timeInterval / msPerMinute) * truckRate;
+
+        if (Math.random() < carfraction) {
+            spawnCar(false);
+        } else // It's possible that there should be an else here, in case no two vehicles can spawn at the same time.
+        // An other solution may be to first draw between spawning a truck and a car then spawn either with doubled probability
+        if (Math.random() < truckfraction) {
+            spawnCar(true);
+        }
+
+
+        for (Road r : getOutgoingRoads()) {
+            if (r != null) {
+                if (!spawnQueue.isEmpty()) {
+                    Car carToPlace = (Car) spawnQueue.peek();
+                    Lane spawnLane = r.getLanes().get(0);
+
+                    int firstNodeInPath = carToPlace.getPath().peek();
+
+                    if (firstNodeInPath == r.getEndnode()) {
+
+                        double highestPos = 0;
+                        int bestLane = -1;
+
+                        for (int i = 0; i < r.getLanes().size(); i++) {
+                            if (!r.getLanes().get(i).getCars().isEmpty()) {
+                                double lastCarPosition = r.getLanes().get(i).getCars().getLast().getPosition();
+
+                                if (lastCarPosition > highestPos) {
+                                    bestLane = i;
+                                    highestPos = lastCarPosition;
+                                }
+                            } else {
+                                bestLane = i;
+                                break;
+                            }
+                        }
+
+                        spawnLane = r.getLanes().get(bestLane);
+                        double distance = spawnLane.getLength();
+
+                        if (!spawnLane.getCars().isEmpty()) {
+                            Car lastCar = spawnLane.getCars().get(spawnLane.getCars().size() - 1); // This gets the last car on the lane.
+                            distance = lastCar.getPosition();
+                        }
+
+                        if (distance >= carToPlace.getLength() + headSpace) { // Is there enough room?
+
+                            if (carToPlace.isTruck()) {
+                                carToPlace.setdVelocity(r.getMaxSpeedTrucks());
+                            } else {
+                                carToPlace.setdVelocity(r.getMaxSpeedCars());
+                            }
+                            carToPlace.setLastLC(System.currentTimeMillis());
+                            spawnLane.addCar(spawnQueue.poll()); // GREAT SUCCESS!!! Add the car on the road.
+                            spawnedCars++;
+                            carToPlace.getPath().poll(); // The first junction needs to be removed since it is allreay headed that way!
+                        }
+                    }
+                    // Don't do super.updateLane here!!!!
+                }
+            }
+        }
+        // Tom : Do le normal lane update Cliff: ME GUSTA
+        for (Road r : getIncomingRoads()) {
+            if (r != null) {
+                for (Lane l : r.getLanes()) {
+                    if (l.getCars().size() > 0) {
+                        Car fCar = l.getCars().getFirst();
+                        if (!fCar.isIsGate() && fCar.getPosition() + fCar.getLength() >= (l.getLength() - fCar.getMinSpace())) {
+                            // The front of the car reaches the end of the road within its minimal spacing
+                            if (fCar.getPath().isEmpty()) {
+                                l.deleteCar(fCar);
+                            } else {
+                                super.updateFirst(timeInterval, r, l, getNextRoadForCar(fCar), fCar);
+                            }
+                        } else {
+                            fCar.drive(0, 0, true, timeInterval);
+                        }
+                        super.updateLane(timeInterval, l, r);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public int CarsSpawned() {
+        return spawnedCars;
+    }
+
+    public void spawnCar(boolean truck) {
+        Car carToSpawn;
+
+        Random rand = new Random(); // TODO Make this more realistic.
+        int endNode = nodeNr;
+        ArrayList<Integer> endNodes = SimulationPanel.exitNodes; // Bad design, send me to hell.
+        Queue<Integer> path = null;
+        while (endNode == nodeNr) {
+            endNode = endNodes.get(rand.nextInt(endNodes.size()));
+        }
+        path = Dijkstra.shortestPath(nodeNr, endNode, false);
+        if (truck) {
+            carToSpawn = makeTruck(path);
+        } else {
+            carToSpawn = makeCar(path);
+        }
+
+        spawnQueue.add(carToSpawn);
+    }
+
+    private Car makeCar(Queue<Integer> path) {
+        double length = 2.5 + (Math.random() * lengthConstant);
+//        System.out.println(length);                 // Length of the car
+        double dVel = 0.0;                          // Desired velocity in m/s
+        double timeHead = 1.5;                     // Recommended time headway
+        double minSpace = 2;                       // Recommended gap between two vehicles
+        double dAccel = 2 + (Math.random() * accConstant);                       // Desired acceleration in m/s^2
+        double decel = 3;                          // Comfortable deceleration rate
+
+        return new Car(length, dVel, minSpace, timeHead, dAccel, decel, null, false, path);
+    }
+
+    private Car makeTruck(Queue<Integer> path) {
+        double length = 10.5;                       // Length of the car
+        double dVel = 0.0;                          // Desired velocity in m/s
+        double timeHead = 1.7;                     // Recommended time headway
+        double minSpace = 2;                       // Recommended gap between two vehicles
+        double dAccel = 1.5;                       // Desired acceleration in m/s^2
+        double decel = 3;                          // Comfortable deceleration rate
+
+        return new Car(length, dVel, minSpace, timeHead, dAccel, decel, null, true, path);
+    }
+}
